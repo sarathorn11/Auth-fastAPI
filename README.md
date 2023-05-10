@@ -39,3 +39,6 @@ postgres=# grant all privileges on database auth_db to sarathorn;
 auth_db=# \c auth_db;
 
 auth_db=# psql -h locahost -p 5432 postgres
+
++ to use it with pgadmin you need to take IP address from docker inspect on file postgres
++ take IP address to make server on pgadmin
