@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+
+  db:
+    container_name: auth_db
+    image: postgres
+    restart: always
+    ports:
+      - 5606:5432
+    environment:
+      - POSTGRES_USER=sarathorn
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=auth_db
+
+  pgadmin:
+    container_name: pgadmin1
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - 5051:80
+    depends_on:
+      - db
+  app:
+    container_name: app1
+    build: .
+    command: bash -c "uvicorn app.main:app --host 0.0.0.0 --port 5050 --reload"
+    volumes:
+      - .:/app
+    ports:
+      - 5050:5050
+    restart: always
+    depends_on:
+      - db
