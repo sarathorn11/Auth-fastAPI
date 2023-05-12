@@ -10,3 +10,4 @@ fastapi_jwt_auth
 fastapi-mail
 pytz
 python-dotenv
+pydantic
