@@ -9,10 +9,13 @@ from ...utils import database
 router = APIRouter()
 
 router = APIRouter(
-    prefix='/auth',
-    tags=['Auth']
+    prefix='/users',
+    tags=['Users']
 )
 
 
-
-
+# sarath 12.05.2023- create new user
+@router.post("/")
+def create_new_user(request: schema.User,db: Session = Depends(database.get_db)):    
+    # create a new user
+    return user.create_user(request, db)
