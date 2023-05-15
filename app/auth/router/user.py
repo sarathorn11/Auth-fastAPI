@@ -15,7 +15,7 @@ router = APIRouter(
 
 # sarath 12.05.2023- get all users
 @router.get("/")
-def get_user(requests:Request, db: Session = Depends(database.get_db)):
+def get_user(db: Session = Depends(database.get_db)):
     return db.query(models.User).all()
 
 # sarath 12.05.2023- create new user

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends,HTTPException, Request, status
 from sqlalchemy.orm import Session
 
-from ..crud import post
+from ..crud import blog
 from .. import schema
 from ... import models
 from ...utils import database
@@ -9,17 +9,17 @@ from ...utils import database
 router = APIRouter()
 
 router = APIRouter(
-    prefix='/posts',
-    tags=['Posts']
+    prefix='/blogs',
+    tags=['Blogs']
 )
 
 # sarath 12.05.2023- get all posts
 @router.get("/")
-def get_posts(requests:Request, db: Session = Depends(database.get_db)):
-    return db.query(models.Post).all()
+def get_blogs(db: Session = Depends(database.get_db)):
+    return db.query(models.Blog).all()
 
 # sarath 12.05.2023- create new post
 @router.post("/")
-def create_new_post(request: schema.Post,db: Session = Depends(database.get_db)):    
+def create_new_blogs(request: schema.Blog,db: Session = Depends(database.get_db)):    
     # create a new post
-    return post.create_posts(request, db)
+    return blog.create_blogs(request, db)

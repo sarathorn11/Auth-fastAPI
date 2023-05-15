@@ -1,12 +1,22 @@
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import Column, DateTime, Integer, String,ForeignKey
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 from .services import Base
 
 
-    
+
+class Blog(Base):
+    __tablename__ = 'blogs'
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    body = Column(String)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    creator = relationship("User", back_populates='blogs')
+
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String)
@@ -14,12 +24,6 @@ class User(Base):
     fullname = Column(String)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     status = Column(String,default='1')
-    
-    
-class Post(Base):
-    __tablename__ = "posts"
+    blogs = relationship("Blog", back_populates='creator')
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String)
-    description = Column(String)
     
