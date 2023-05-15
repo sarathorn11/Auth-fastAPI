@@ -11,6 +11,6 @@ fastapi-mail
 pytz
 python-dotenv
 pydantic
-python-multipart
 PyJWT
 Flask-Mail
+twilio

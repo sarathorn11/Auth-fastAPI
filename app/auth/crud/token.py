@@ -7,11 +7,12 @@ from ..token import token
   
 def user_login(response,request,db):
     user = db.query(models.User).filter(models.User.email == request.username).first()
-    response.set_cookie(key="username", value=user.email)
+    # response.set_cookie(key="username", value=user.email)
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail= f"USER is NOT FOUND.")
 
     if not Hash.verify(user.password, request.password):
+        print("+++++++++++++++++++++++", Hash.verify(user.password, request.password))
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail= f"Incorrect Password.")
 
 

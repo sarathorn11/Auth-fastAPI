@@ -3,10 +3,11 @@ from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 
 from ...utils import database
-from ..crud import token,oauth2,emails
-from .. import schema
+from ..crud import token,oauth2,emails,sms
+from .. import schema,hashing
 import uuid
 from ..hashing import Hash
+from ... import models
 
 
 
@@ -20,8 +21,17 @@ router = APIRouter(
     tags=['Auth']
 )
 
+@router.post('/register')
+def register(request: schema.User,db: Session = Depends(database.get_db)):
+    new_user = models.User(fullname=request.fullname, email=request.email, password=hashing.Hash.bcrypt(request.password),status=0)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+
 @router.post('/login')
-def login(response: Response,request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
+def login(response: Response,request:  OAuth2PasswordRequestForm=Depends(), db: Session = Depends(database.get_db)):
     
     return token.user_login(response,request,db)
 
@@ -101,3 +111,9 @@ def reset_password(request:schema.ResetPassword,db: database.SessionLocal = Depe
         "code":200,
         "message":"Password has been reset successfully"
     }
+
+@router.post("/sms")
+def send_sms():
+    reset_code = str(uuid.uuid1())
+    phone_number="+855885178433"
+    sms.sms_sent(reset_code,phone_number)
