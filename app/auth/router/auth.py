@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends,HTTPException, status,Response
+from fastapi import APIRouter, Depends,HTTPException, status,Response,Request
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -6,6 +6,7 @@ from ...utils import database
 from ..crud import token,oauth2,emails
 from .. import schema
 import uuid
+from ..hashing import Hash
 
 
 
@@ -68,4 +69,35 @@ def forgot_password(request: schema.ForgotPassword, db: database.SessionLocal = 
         "reset_code":reset_code,
         "code":200,
         "message":"We are sent an email with instructions to reset your password"
+    }
+    
+@router.post("/logout")
+def logout(request:Request,token:str= Depends(oauth2.get_token_user), db: database.SessionLocal = Depends(database.get_db)):
+    current_user = request.cookies.get('username')
+    oauth2.save_black_list_token(token,db,current_user)
+    return {"status_code": status.HTTP_200_OK,"detail":"Logged out successfully"}
+    
+    
+@router.post("/reset_password") 
+def reset_password(request:schema.ResetPassword,db: database.SessionLocal = Depends(database.get_db)):
+    # check valid reset password token
+    reset_token = oauth2.check_reset_password_token(request.reset_password_token,db)
+    if not reset_token:
+        raise HTTPException(status_code=404,detail="Reset password token have expired, please request a new one.")
+    
+    # check both new & confirm password are matched
+    if request.new_password != request.confirm_password:
+         raise HTTPException(status_code=404,detail="New password is not matched")
+
+    # reset new password 
+    forgot_password_object = reset_token.email
+    new_hashed_password =  Hash.bcrypt(request.new_password)
+    oauth2.reset_password(new_hashed_password, forgot_password_object,db)
+
+    # Disable reset password code(alredy used)
+    oauth2.disable_reset_code(request.reset_password_token,forgot_password_object,db)
+
+    return {
+        "code":200,
+        "message":"Password has been reset successfully"
     }
