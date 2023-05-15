@@ -41,3 +41,28 @@ class Login(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
 
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
+
+
+class CreateOTP(BaseModel):
+    recipient_id:str
+
+class VerifyOTP(CreateOTP):
+    session_id:str
+    otp_code:str
+
+class OTPList(VerifyOTP):
+    status:str
+    otp_failed_count:int
+
+class ForgotPassword(BaseModel):
+    email: str
+
+class ResetPassword(BaseModel):
+    reset_password_token:str
+    new_password:str
+    confirm_password:str
+
+    

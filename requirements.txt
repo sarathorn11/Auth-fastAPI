@@ -13,3 +13,4 @@ python-dotenv
 pydantic
 python-multipart
 PyJWT
+Flask-Mail
