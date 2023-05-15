@@ -5,7 +5,6 @@ passlib
 bcrypt
 psycopg2-binary
 python-jose
-python-multipart
 fastapi_jwt_auth
 fastapi-mail
 pytz
@@ -14,3 +13,4 @@ pydantic
 PyJWT
 Flask-Mail
 twilio
+python-multipart

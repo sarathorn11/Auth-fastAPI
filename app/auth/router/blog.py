@@ -23,3 +23,20 @@ def get_blogs(db: Session = Depends(database.get_db)):
 def create_new_blogs(request: schema.Blog,db: Session = Depends(database.get_db)):    
     # create a new post
     return blog.create_blogs(request, db)
+
+
+@router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schema.ShowBlog)
+def get_blog(id:int, db: Session = Depends(database.get_db), current_user: schema.User = Depends(oauth2.get_current_user)):
+
+    return blog.get_blog(id, db)
+
+@router.delete('/{id}', status_code=status.HTTP_200_OK)
+def delete_blog(id:int, db: Session = Depends(database.get_db), current_user: schema.User = Depends(oauth2.get_current_user)):
+
+    return blog.delete_blog(id, db)
+
+@router.put('/{id}', status_code=status.HTTP_200_OK)
+def update_blog(id:int,request: schema.Blog, db: Session = Depends(database.get_db), current_user: schema.User = Depends(oauth2.get_current_user)):
+
+    return blog.update_blog(id, request, db)
+
