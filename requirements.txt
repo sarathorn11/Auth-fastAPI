@@ -12,3 +12,4 @@ pytz
 python-dotenv
 pydantic
 python-multipart
+PyJWT
